@@ -2,12 +2,21 @@ import requests
 from time import sleep
 from datetime import datetime
 
+from get_IP import get_IP_from_MAC
+
 ## JJM: MIGHT WANT THIS TO BE COMMAND LINE INPUTS
-address='http://192.168.1.2:81'
+#address='http://192.168.1.23:81'
+skyAlertMAC = '2c:f7:f1:b8:10:73'
 logfolder = './skyalert-logs/'
 logfolder = '/home/airglow/airglow/skyalert-logger/skyalert-logs/'
-site = 'uao'
+site = 'blo'
 index = 0
+
+# get the SkyAlert IP address from the MAC address using ARP
+SkyAlert_IP = get_IP_from_MAC(skyAlertMAC)
+address = 'http://' + SkyAlert_IP + ':81'
+print("Found skyalert on " + address)
+
 while 1:
     count = 5
     while count != 0:
@@ -18,6 +27,12 @@ while 1:
             count = count - 1
             if count == 0:
                 print("failed to connect to skyalert")
+
+                # Try to find the SkyAlert (maybe add reboot capability?
+                print("Trying to find the IP of skyalert")
+                SkyAlert_IP = get_IP_from_MAC(skyAlertMAC)
+                address = 'http://' + SkyAlert_IP + ':81'
+                print("Found skyalert on " + address)
             sleep(5)
 
     print(arr)
